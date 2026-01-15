@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>山西麻将点数计算器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            background-color: #2c6e49;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: #2c6e49;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            padding: 14px 18px;
+            font-size: 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-grow: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: #4c956c;
+            color: white;
+        }
+        
+        .btn-primary.active {
+            background-color: #2c6e49;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2c6e49;
+        }
+        
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary.active {
+            background-color: #d4a574;
+            color: white;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #d4a574;
+        }
+        
+        .btn-special {
+            background-color: #4a7c9c;
+            color: white;
+        }
+        
+        .btn-special.active {
+            background-color: #2c5a7a;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2c5a7a;
+        }
+        
+        .selection-instruction {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+            padding: 5px 0;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 2px solid #eee;
+            transition: all 0.3s;
+        }
+        
+        .radio-option.selected {
+            background-color: #e8f5e9;
+            border-color: #2c6e49;
+        }
+        
+        .radio-option input {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+        }
+        
+        .gang-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        
+        .gang-control {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .gang-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #2c6e49;
+        }
+        
+        .gang-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .gang-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 22px;
+            border-radius: 50%;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .gang-btn.active {
+            background-color: #4c956c;
+            color: white;
+        }
+        
+        .gang-count {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #2c6e49;
+        }
+        
+        .calc-btn {
+            background-color: #ff6b35;
+            color: white;
+            font-size: 24px;
+            padding: 18px;
+            width: 100%;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .calc-btn:hover {
+            background-color: #e55a2b;
+        }
+        
+        .result {
+            background-color: #e8f5e9;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: center;
+            border-left: 6px solid #2c6e49;
+            display: none;
+        }
+        
+        .result-title {
+            font-size: 22px;
+            color: #2c6e49;
+            margin-bottom: 15px;
+        }
+        
+        .result-content {
+            font-size: 26px;
+            color: #d62828;
+            font-weight: bold;
+            line-height: 1.8;
+        }
+        
+        .instruction {
+            background-color: #fff8e1;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 18px;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        
+        .instruction h3 {
+            color: #d4a574;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 8px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .btn {
+                font-size: 18px;
+                padding: 12px 15px;
+                min-width: 110px;
+            }
+            
+            .gang-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .result-content {
+                font-size: 22px;
+            }
+            
+            .radio-option {
+                font-size: 18px;
+                padding: 8px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .button-group {
+                gap: 8px;
+            }
+            
+            .btn {
+                font-size: 16px;
+                padding: 10px 12px;
+                min-width: 90px;
+            }
+            
+            .radio-option {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>山西麻将胡牌点数计算器</h1>
+    </header>
+    
+    <div class="section">
+        <h2 class="section-title">1. 胡牌人是否为庄家？</h2>
+        <p class="selection-instruction">选择胡牌人身份：</p>
+        <div class="button-group">
+            <button id="btn-dealer-yes" class="btn btn-special">胡牌人是庄家</button>
+            <button id="btn-dealer-no" class="btn btn-special active">胡牌人不是庄家</button>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2 class="section-title">2. 胡牌方式</h2>
+        <p class="selection-instruction">只能选择一种胡牌方式：</p>
+        <div class="radio-group">
+            <div class="radio-option" id="option-b">
+                <input type="radio" id="radio-b" name="bcd-option" value="b">
+                <label for="radio-b">自摸（所有人付钱）</label>
+            </div>
+            <div class="radio-option" id="option-c">
+                <input type="radio" id="radio-c" name="bcd-option" value="c">
+                <label for="radio-c">点炮人已听牌（所有人付钱）</label>
+            </div>
+            <div class="radio-option" id="option-d">
+                <input type="radio" id="radio-d" name="bcd-option" value="d">
+                <label for="radio-d">点炮人未听牌（点炮人付钱）</label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2 class="section-title">3. 选择胡牌役种</h2>
+        <p class="selection-instruction">可多选：</p>
+        <div class="button-group">
+            <button id="btn-menqing" class="btn btn-secondary" data-points="1">门清 +1</button>
+            <button id="btn-kanzhang" class="btn btn-secondary" data-points="1">坎张 +1</button>
+            <button id="btn-dandiao" class="btn btn-secondary" data-points="1">单吊 +1</button>
+        </div>
+        <div class="button-group">
+            <button id="btn-dapenghu" class="btn btn-secondary" data-points="5">大碰胡 +5</button>
+            <button id="btn-hunyise" class="btn btn-secondary" data-points="5">混一色 +5</button>
+        </div>
+        <div class="button-group">
+            <button id="btn-qidui" class="btn btn-secondary" data-points="8">七对(已包含门清) +8</button>
+            <button id="btn-long" class="btn btn-secondary" data-points="10">龙 +10</button>
+            <button id="btn-qingyise" class="btn btn-secondary" data-points="10">清一色 +10</button>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2 class="section-title">4. 选择杠的数量</h2>
+        <div class="gang-section">
+            <div class="gang-control">
+                <div class="gang-title">明杠（每个+1）</div>
+                <div class="gang-buttons">
+                    <button class="gang-btn" data-type="ming" data-value="-1">-</button>
+                    <button class="gang-btn" data-type="ming" data-value="+1">+</button>
+                </div>
+                <div class="gang-count" id="ming-count">0</div>
+            </div>
+            
+            <div class="gang-control">
+                <div class="gang-title">暗杠（每个+2）</div>
+                <div class="gang-buttons">
+                    <button class="gang-btn" data-type="an" data-value="-1">-</button>
+                    <button class="gang-btn" data-type="an" data-value="+1">+</button>
+                </div>
+                <div class="gang-count" id="an-count">0</div>
+            </div>
+        </div>
+    </div>
+    
+    <button id="calculate-btn" class="calc-btn">计算点数</button>
+    
+    <div id="result" class="result">
+        <h3 class="result-title">计算结果</h3>
+        <div class="result-content" id="result-content"></div>
+    </div>
+    
+    <div class="instruction">
+        <h3>使用说明</h3>
+        <p>1. 首先选择胡牌人是否为庄家</p>
+        <p>2. 选择胡牌方式：自摸、点炮人已听牌或点炮人未听牌（只能选一个）</p>
+        <p>3. 选择胡牌中包含的役种（可多选）</p>
+        <p>4. 设置明杠和暗杠的数量</p>
+        <p>5. 点击"计算点数"按钮查看结果</p>
+    </div>
+    
+    <script>
+        // 初始化变量
+        let isDealer = false; // 默认不是庄家
+        let selectedOption = "b"; // 默认选择自摸
+        let selectedYizhong = new Set();
+        let mingGangCount = 0;
+        let anGangCount = 0;
+        
+        // 役种按钮数据
+        const yizhongButtons = {
+            'btn-menqing': {name: '门清', points: 1},
+            'btn-kanzhang': {name: '坎张', points: 1},
+            'btn-dandiao': {name: '单吊', points: 1},
+            'btn-dapenghu': {name: '大碰胡', points: 5},
+            'btn-hunyise': {name: '混一色', points: 5},
+            'btn-qidui': {name: '七对', points: 8},
+            'btn-long': {name: '龙', points: 10},
+            'btn-qingyise': {name: '清一色', points: 10}
+        };
+        
+        // 初始化页面元素
+        document.addEventListener('DOMContentLoaded', function() {
+            // 庄家按钮 - 改为两个明确的选项
+            document.getElementById('btn-dealer-yes').addEventListener('click', function() {
+                isDealer = true;
+                this.classList.add('active');
+                document.getElementById('btn-dealer-no').classList.remove('active');
+            });
+            
+            document.getElementById('btn-dealer-no').addEventListener('click', function() {
+                isDealer = false;
+                this.classList.add('active');
+                document.getElementById('btn-dealer-yes').classList.remove('active');
+            });
+            
+            // BCD选项 - 改进为点击整个选项区域
+            document.getElementById('option-b').addEventListener('click', function() {
+                selectBcdOption('b');
+            });
+            
+            document.getElementById('option-c').addEventListener('click', function() {
+                selectBcdOption('c');
+            });
+            
+            document.getElementById('option-d').addEventListener('click', function() {
+                selectBcdOption('d');
+            });
+            
+            // 役种按钮
+            Object.keys(yizhongButtons).forEach(btnId => {
+                document.getElementById(btnId).addEventListener('click', function() {
+                    const yizhong = yizhongButtons[btnId];
+                    if (selectedYizhong.has(yizhong.name)) {
+                        selectedYizhong.delete(yizhong.name);
+                        this.classList.remove('active');
+                    } else {
+                        selectedYizhong.add(yizhong.name);
+                        this.classList.add('active');
+                    }
+                });
+            });
+            
+            // 明杠/暗杠按钮
+            document.querySelectorAll('.gang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    const value = parseInt(this.getAttribute('data-value'));
+                    
+                    if (type === 'ming') {
+                        mingGangCount += value;
+                        if (mingGangCount < 0) mingGangCount = 0;
+                        if (mingGangCount > 4) mingGangCount = 4;
+                        document.getElementById('ming-count').textContent = mingGangCount;
+                    } else if (type === 'an') {
+                        anGangCount += value;
+                        if (anGangCount < 0) anGangCount = 0;
+                        if (anGangCount > 4) anGangCount = 4;
+                        document.getElementById('an-count').textContent = anGangCount;
+                    }
+                });
+            });
+            
+            // 计算按钮
+            document.getElementById('calculate-btn').addEventListener('click', calculatePoints);
+            
+            // 初始化默认选项
+            selectBcdOption('b');
+        });
+        
+        // 选择BCD选项函数
+        function selectBcdOption(option) {
+            selectedOption = option;
+            
+            // 更新UI
+            document.querySelectorAll('.radio-option').forEach(el => {
+                el.classList.remove('selected');
+                el.querySelector('input').checked = false;
+            });
+            
+            // 设置选中状态
+            document.getElementById(`option-${option}`).classList.add('selected');
+            document.getElementById(`radio-${option}`).checked = true;
+        }
+        
+        // 计算点数函数
+        function calculatePoints() {
+            // 验证输入
+            if (selectedOption === null) {
+                alert('请选择胡牌方式（自摸、点炮人已听牌或点炮人未听牌）');
+                return;
+            }
+            
+            // 计算役种总点数
+            let yizhongPoints = 0;
+            selectedYizhong.forEach(name => {
+                // 找到对应的役种并累加点数
+                for (const key in yizhongButtons) {
+                    if (yizhongButtons[key].name === name) {
+                        yizhongPoints += yizhongButtons[key].points;
+                        break;
+                    }
+                }
+            });
+            
+            // 计算杠总点数
+            const gangPoints = mingGangCount * 1 + anGangCount * 2;
+            
+            // 根据规则计算点数
+            let resultText = '';
+            
+            if (isDealer) {
+                // 庄家胡牌
+                if (selectedOption === 'b') {
+                    // 自摸
+                    const basePoints = 3 + yizhongPoints;
+                    const totalPoints = basePoints * 2 + gangPoints;
+                    resultText = `庄家自摸胡牌！<br>所有人应付：<span style="color:#d62828;font-size:28px">${totalPoints}</span> 点`;
+                } else if (selectedOption === 'c') {
+                    // 点炮人已听牌
+                    const totalPoints = 3 + yizhongPoints + gangPoints;
+                    resultText = `庄家胡牌，点炮人已听牌！<br>所有人应付：<span style="color:#d62828;font-size:28px">${totalPoints}</span> 点`;
+                } else if (selectedOption === 'd') {
+                    // 点炮人未听牌
+                    const basePoints = 10 + yizhongPoints * 3 + gangPoints * 3;
+                    resultText = `庄家胡牌，点炮人未听牌！<br>点炮人应付：<span style="color:#d62828;font-size:28px">${basePoints}</span> 点`;
+                }
+            } else {
+                // 闲家胡牌
+                if (selectedOption === 'b') {
+                    // 自摸
+                    const dealerBasePoints = 3 + yizhongPoints;
+                    const dealerTotalPoints = dealerBasePoints * 2 + gangPoints;
+                    
+                    const playerBasePoints = 2 + yizhongPoints;
+                    const playerTotalPoints = playerBasePoints * 2 + gangPoints;
+                    
+                    resultText = `闲家自摸胡牌！<br>庄家应付：<span style="color:#d62828;font-size:28px">${dealerTotalPoints}</span> 点<br>闲家应付：<span style="color:#d62828;font-size:28px">${playerTotalPoints}</span> 点`;
+                } else if (selectedOption === 'c') {
+                    // 点炮人已听牌
+                    const dealerTotalPoints = 3 + yizhongPoints + gangPoints;
+                    const playerTotalPoints = 2 + yizhongPoints + gangPoints;
+                    
+                    resultText = `闲家胡牌，点炮人已听牌！<br>庄家应付：<span style="color:#d62828;font-size:28px">${dealerTotalPoints}</span> 点<br>闲家应付：<span style="color:#d62828;font-size:28px">${playerTotalPoints}</span> 点`;
+                } else if (selectedOption === 'd') {
+                    // 点炮人未听牌
+                    const totalPoints = 8 + yizhongPoints * 3 + gangPoints * 3;
+                    resultText = `闲家胡牌，点炮人未听牌！<br>点炮人应付：<span style="color:#d62828;font-size:28px">${totalPoints}</span> 点`;
+                }
+            }
+            
+            // 显示结果
+            document.getElementById('result-content').innerHTML = resultText;
+            document.getElementById('result').style.display = 'block';
+            
+            // 滚动到结果区域
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
